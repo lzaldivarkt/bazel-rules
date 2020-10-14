@@ -14,9 +14,8 @@ def _sops_decrypt_impl(ctx):
     Args:
         name: A unique name for this rule.
         srcs: Array of secret files to decrypt
-        sops_yaml: Sops config file
     """
-    inputs = [ctx.file.sops_yaml] + ctx.files.srcs
+    inputs = ctx.files.srcs
     outputs = []
 
     sops = ctx.toolchains["@com_github_masmovil_bazel_rules//toolchains/sops:toolchain_type"].sopsinfo.tool.files.to_list()[0]
@@ -38,7 +37,6 @@ def _sops_decrypt_impl(ctx):
               "\tdecrypt_file %s %s" % (sopfiles(ctx, f), declare_output(ctx, f, outputs))
               for f in ctx.files.srcs]),
             "{SOPS_BINARY_PATH}": sops.path,
-            "{SOPS_CONFIG_FILE}": sops_yaml,
             "{SOPS_PROVIDER}": ctx.attr.provider,
             "{GPG_BINARY}": gpg.path
         }
