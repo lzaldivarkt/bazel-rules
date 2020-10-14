@@ -19,7 +19,6 @@ def _sops_decrypt_impl(ctx):
     outputs = []
 
     sops = ctx.toolchains["@com_github_masmovil_bazel_rules//toolchains/sops:toolchain_type"].sopsinfo.tool.files.to_list()[0]
-    sops_yaml = ctx.file.sops_yaml.path
 
     gpg = ctx.toolchains["@com_github_masmovil_bazel_rules//toolchains/gpg:toolchain_type"].gpginfo.tool.files.to_list()[0]
 
@@ -63,7 +62,6 @@ sops_decrypt = rule(
     implementation = _sops_decrypt_impl,
     attrs = {
       "srcs": attr.label_list(allow_files = True, mandatory = True),
-      "sops_yaml": attr.label(allow_single_file = True, mandatory = True),
       "provider": attr.string(default = "gcp_kms"),
       "_script_template": attr.label(allow_single_file = True, default = ":sops-decrypt.sh.tpl"),
     },
